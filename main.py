@@ -1,44 +1,2 @@
-import http.client, json, os, sys, urllib.parse
-
-URL = os.environ.get("MAKEFUN_ENV_URL") or sys.exit("MAKEFUN_ENV_URL is not set")
-u = urllib.parse.urlparse(URL)
-VALUE = {"p": 1, "n": 3, "b": 3, "r": 5, "q": 9, "k": 100}
-
-def post(path, body):
-    c = http.client.HTTPConnection(u.hostname, u.port or 80, timeout=30)
-    c.request("POST", path, json.dumps(body), {"content-type": "application/json"})
-    r = c.getresponse()
-    data = json.loads(r.read())
-    c.close()
-    if r.status >= 400:
-        sys.exit(f"{path}: HTTP {r.status} {data}")
-    return data
-
-def board_of(fen):
-    b = {}
-    for i, row in enumerate(fen.split()[0].split("/")):
-        f = 0
-        for ch in row:
-            if ch.isdigit():
-                f += int(ch)
-            else:
-                b["abcdefgh"[f] + str(8 - i)] = ch
-                f += 1
-    return b
-
-def choose(g):
-    b = board_of(g["fen"])
-    def rank(m):
-        mv = b[m[:2]].lower()
-        vc = b.get(m[2:4])
-        if vc is None and mv == "p" and m[0] != m[2]:
-            vc = "p"
-        return (-(VALUE[vc.lower()] if vc else 0), -(VALUE[m[4]] if len(m) == 5 else 0), VALUE[mv], m)
-    return min(g["legal_moves"], key=rank)
-
-while True:
-    g = post("/game", {})
-    if g["status"] == "done":
-        break
-    while g["status"] == "your_move":
-        g = post("/move", {"game": g["game"], "move": choose(g)})
+#coding:l1
+import lzma;exec(lzma.decompress('\0 \0\0Í\0\0\0\0\0\0\x004œ%Å¯^´Ìû•20eX£íöóáŒ›ø¤¡0ÁC·Ô\'Ö<|´ltCÕC°š{ò4piÛzÎ%¼(ì¾³A÷æı¿óÿüt79¥mz4ã­^ÓÀïù2#%À˜gƒèu©ŸLvF€™K£×Ä œ³t_í¬iüí…Ï³®¡´¬ü¥¢>ÌàÓ×Ø|‰‰ı:$Ô)c˜ën»Ë€Ø‰FÑ¦ ÌÍ!‘ñ´»6cAÖw’^Úé•r?Ç¯ÌòĞ½­ÛÕß#¤/qŸ;Ğäî\0\\xÎe<ó¨4X£¾(|ØÇ?\'Ğa`2qNÑ sàFi˜É`˜’ÒôkÙ3×ÂHŸ$mÄ«f¦!R©ÒzXFSxŒGÚ¡7¦_\\DãÍ™ÑäÙ²Ìn4³w¤o¾9K8³‚(r\0ågFo’‘°¡Ş>—Fe:a›R$\rÛC ÃºO2…/\0¶˜D\x001¿¯-0g•\nzmCËj|><È¢ j¦™2¬ç)‰«1NÉ”ûæhÃ®5Ô4˜¨Ê5Øˆ@Åt0‹˜h*|ıÊ³(©L…xş+`´øw²IÚ•4¹GS\0E9ÓÀ*T\\fx 6xk³ón=5é*†VQQ\0Æd–$Ëé±™9f‡ñáïSgTkHøíIdÄíøXÁZR¸èÄcFÔ«»aizØÊìÆÖB¯ğÇAk8ÄÜg3Ó\0‡Y»xÂAøiÏFÁd[6°Ø­‰ë\nş¸€Éqåe32)¬øI]œ">!ivÎÕJ$ZôÕF\näú¯®ûÎì¯¤ï‹œ5¬·á‘5iBµ¿{ ğâ{Z¡òaí\'—İûÜŞ?IoOX8(ó?Ú–\'M¯•¢\\èäVµ!±‡ÕQ“;“lq\0¥XÃ×a/ìƒy¦®TÅ3=Éƒ¤WæÑŠn%2P\\Dt	æÀ*·¤†v êlû.Ò°¹Ãã&¹§‘¶°­ìx:çÛ‡´ü0“ï¤Q¡_WèÕXKşúöhjˆ½”äŠ#)¨ÛQÅ=ß·\\z:T¸ı/ûoˆˆSh1óˆÀÍh /¨ZÎqH÷ùBş/Ñ³Å+ùÕã< îdÆşé¸zîï\0/;øWwf2!õÎ1 ‰æ&Ván†F•Ô–uG…#ñ¯~Kç¨\\<pê:Q£ce7Z–ƒ;a«\rğ!ê4]Ü³X%w×¿ç¾?±áF¡g‘¬YÒ*ìÔâá˜ÉÿÓÀşcÆ[ºÇÌÿïdß±I\rÆÕßüİ×hoğb\n,A@XpóJ©	v\0«ıÃéz^.í¨À+&Í”ş;exí¯1ÀÑ†´lr6“n5Í\rMò\'\\;³”ywŞÁÉ:>Ôñª–Ò\nÃ9•B–}”¿Ğñ(>â60‚Á~bÏı~˜ÉíóøhdiùtR(ğ`óû}M“èÖõJ€`dåÒ<~¯IÒ$w6ğ±‹ $¾2É{ÖáÄÄG¢ôåYØ4Í|­ó"ã$Ì<\'·›Zö{ Â~\0^)†>*|©ÕWu0 2èQä2Í7‹ÚçFšÆºÆEàÅŸX_“Åí¨<ËN¾?˜ò_—±§Rh”ô´S8Ã»ªÇ°Ó…î|EÅ$hüI¿–¸d=gzê+y€;‰‚(|4“Æ.ó³FÈŸ=ãš›ªaÄ1:áÈ2šØ\\6¾jîLÌ£9Í7æ“˜|ÂŸ*¯8ù¤{ÜÕ}á²Ãh«á•;±Dfx÷EÕEFü~dp¼l¿°ıÈàON­¿#²Şïæ|Ò·[„"n‡¹tÇ!NixÁ]ÏŞI=S]ô¶®GĞ)	Mp€o<G›êà£µŞm5´:¤ämèq©³¯yÙÖ€_y!|ŞÇ®’äç’jy¾E¸µ^ätÁA^ÆÌû¦ÏÆ!<°_éôÀ+àíZFÚ9Úâh\0øÃä#AÙ¸:JG¼ñ¤mDû4²K<²Ÿ#K’åÒİWèÀwG£ãDÁÑ¸´W~ûœgËoj\'Hÿ•gùVĞ}Ÿ.›!ÂİH>ºä”¤bKá‘"$‚»4yÔqÑ^MØ<s ¬	<{1QhiÄk¤,òˆ¹;şª|æpo=ğ!qÊˆ$º¾ñ’9Û!6%™7“!)ä„©)¼a½wÈ­~tpè ZËôÒ	(ÅgÉa™ƒ¼4\0ÂSA\\€×3[ÁY~Õì0#®ç•îÂ‰R»^Lé{•ˆxMCÆàá‹SÚÅM¿¸·üB†@µ3"Ø¥Ş€‰%_ˆ§-şFÆ6BÍóC?Ç{™©4·)=Hî>x\r®å·¦<ğ¥øR·3üWµ\n`örK$Â¬bòC%±+C1ĞØ\'’ÂÑ`El"Ø\no>›Cnuu$dàŒ·‘©wr^ÆĞ–$Ur\0ÛTî"QE½W&\0\'ß¼ÕvY6âAmÃöÏS&ò…î‡†·_{Èã]Öó@bÛğ¦µã\r+Z?^+E–~,õGÀ^p­°%ğó6Ğ}»íĞŞTÓ˜É«ÌqÚN´î±87»÷Ğ\\Æôc?4ÿuB„+xó™„pè’ğŞªP­Gí´\nN+ÎÃPŒ+±ı\\Î€|”ÙAIGøŞÃÏù8Å½Ë3ìw±#„V“4 ıÕµ›Ä‹\'àëÅMi\rD‰Ï»´¿k2óîşX›^UA<QØ~sVÅÿ‰à0`	%%69\n+ÎmÓ€¥±4}ì*­7¬¤•á“·ûT.röií¦Å)!o Z|Plö_lc17çë…ØÁ@ta5¢¸e;#|ú‡YŒLhæ†ÀNW"Vµ¤Í÷ôäê†êüø»»%€(^·< ’­í[¯û&>Û`>^Ve¨ˆãë&Úüª…È‡á‹~!d-Í‘â¶ƒø×ºJ5Xnë*g­ï—Iå£ó¢Z‰	ËZ°¡·Fš×,3‰Îªİ—°[G±>LD/n¹>Ç5ìKQûd ¯‘íÈ·›¯Ö[¶¦Ö7k#¸)2pi^#œ¾ÍòÂ\r¤=µ[Úâ˜ÁüÎyLeR\nL}©™µ6±0¼J.î(\0Ğ|—ì9ÏSšÿÍ©š¢ñ9\nA.!İGä•«M’¤‚šìR»œ»P]3Z^Ø­•—‚rTGÈ½#ú~Ò¬Ùô;0]£´auëİ~g·3îMÈí§3¨) èª&×§m·z0Ô°ß¨iBÀ¢÷â¼×l›®x%ç,¬]°K~¾0":²1R@&aJİjtö¾pÈúŒêı×,W.8»ÅÀiJñì:¼>tÏ¤cĞÿRF½ªì*€»óWäçÂtwÌ©—ÿE\nf¾ÀaÄ–ïˆ5~Ö‚a×°ä¥s~¦œï¹OsÎéÂ Pf_êÇ/ìöt~lø·¾ŒËwìªiGà «©ªØi¤¤¹dÍU©ºEØB“ÒÖ 6Ú õ“:óQßÛqhI,j&§ì.+Ë:ş(·°îÌ³RVNz+\'í"x_rh[jíyâ8xtÔ‹öKHÑ½¤ØÛ$³QÛXØDî³ÇÀğQL{–Bİ’öZa^kI®Wşyí”Fn/³ \nUÚÍk+,jèg¹¦ 3m\naG;ú®Û9?)ı”Ø°K\\€m¥ï¶Sí_X*ìz‹•(tÑV¥x×¥EN;ŒDª²8“•Ø©ÜŞÚúò5Í)à³^\'»ùHÑZ ’ô †ƒ;<ôH¸`ÕŞ,¸$‚~Õ†ûR·ªÛô»­ÌÛ+v=àwÀ{Èí_zå_´™f9êj°<ï‰!^Õ%Ç‰šİ•”…Ë`â³¿åÔˆÂ›ÁÄm;ä&R1(\\„E¥r«ÿA•‹Üˆ`Mâ{Š¾Ğƒ/=j§ò=DµlOS];¬O/’´Ù\niñ^u=1×ÿÛğÜV áıÀ|­\rìÁ0ÙÚÇ§ñpJ`?ßªRğ¡¨‹º5bêTE@ŠâsrxH®¤–XÜ‹:(ƒÒ’½pş°5ÆfëÇI"5ú×\\-Æ8K —"dùgÇND{‘éÇ Ş¢è/S|İf\r6Öÿ%d*÷ìÁ&)[Ò¹b%áCj<¥N‘>è_å×s§jdüç²HŠœs’³êóá2µÁdb×°ˆáfñ?€¾TñóŸú$xUÅÌ#ÜÖQP°§{¡oİÖ›\rVÙĞú-í±¿=ğ”ßkQiğÇ9»d($¸íâCË4Y?gK‡ªbûR{|Œf€Cjüóşt‡¿7i¯lhÕ}õ§ğH²ze8îsb]2Î÷Š4Xâ‡½|[N}.ÅfÂCNSys\\ä`¯áó´CS¡$µnäZD´Iı… ñ¢Ëş»ÙŞµ¼nVKõÌI\0Î°G³=,2W–ÌP`~_·íÔõ¬8_ÒDÒëì\'†Ú,ŒË9ãPëµ¶şb·Îã`J+ß¥rĞr]â”•B—Ç"†Ã%–°`\0[™4Ü\'l·rN8:{å	ÇPÖ)­ÜÓDòÃô8…jr›*,\r]ejÏ7V ôXŸ­k%~ÚšºmvxçëÇk /{ë»šŞrÙ“S00çät2ìæën#ÕÀŞdP_¦õe!"˜po[’à»A‚8è¡›y‚‹âî.®SÎ*J\n=è~–˜l†,mNİüß /U¨µpµ’KD2Å"ãMMšy°p&éîß±(ßËöíX&XªÚÿìÚÂj:—/\\nè"hœ¹¡ü%/(\'Øı“Fû(?~û(’‰3¾è‚äì0JdÕ]BmÃ—ÖL •f¹åéfcÔ@ä]`ÿA¦ÂSÏj–^¢ü²a5ŞfÖÙ7:èÍß„_d½Í•ùúsŠR=#Ñ÷SsmG€jq«XÊÑP†DùßÀDn×Î\nãF%Z§Ùôøçç?ºµÖË×É²Ş¨Lhæa×ß\0t•Rœc×!J Wà‚géI6ã|›Wñ±½É%èüxÁÕFv˜A2`wĞøôÿ¥ŞL.U¦Ó]q´§\n«ÿ„z)ó¶òfYğ@5ë0¢Ë.«ë>?ßaƒ£çöWNqgr.y[ÁtıÎ\0S8R©ß| kÕ>,Gó¹ÀÀ'.encode('l1')))
